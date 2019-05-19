@@ -9,6 +9,6 @@
             "es2015"
         ]
     },
-    "include": ["src"],
+    "include": ["src", "tests/hello-airtable.test.ts"],
     "exclude": ["node_modules", "**/_tests_/*"]
 }
