@@ -4,12 +4,14 @@ import { Base } from './base';
 export class Airtable {
   apiKey: string | false;
   root: string;
-  bases: Map<string, Base>;
+  bases: {
+      [key: string]: Base
+  };
 
   constructor(rootUrl: string, apikey: string) {
     this.apiKey = !isNothing(apikey) ? apikey : false;
     this.root = !isNothing(rootUrl) ? rootUrl : 'https://api.airtable.com/v0/';
-    this.bases = new Map();
+    this.bases = {}
   }
 
   isValid() {
@@ -19,10 +21,18 @@ export class Airtable {
   generateBaseUrl() {}
 
   addBase(baseId: string) {
-    this.bases.set(baseId, new Base(baseId));
+    this.bases[baseId] = new Base(baseId);
   }
 
   removeBase(baseId: string) {
-    this.bases.delete(baseId);
+    delete this.bases[baseId];
+  }
+
+  inspect(){
+    return {
+        apiKey: this.apiKey,
+        root: this.root,
+        bases: this.bases
+    }   
   }
 }

@@ -91,7 +91,7 @@ const aggregateParamStrings = (acc: string, cur: string): string => {
 };
 
 export const encodeGetUrl = (root: string) => (apiKey: string) => (base: string) => (table: string) => (
-    params: queryParams,
+    params?: queryParams,
 ) => {
     const encodedParams = Object.keys(params)
         .map(buildParamString(params))
