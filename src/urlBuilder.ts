@@ -7,11 +7,11 @@ interface airtableSort {
 }
 
 interface queryParams {
-    fields?: [string];
+    fields?: string[];
     maxRecords?: number;
     filterByFormula?: string;
     pageSize?: number;
-    sort?: [airtableSort];
+    sort?: airtableSort[];
     view?: string;
     offset?: string;
 }
@@ -41,7 +41,7 @@ const buildParamString = (params: queryParams) => (property: string): string | n
     }
 };
 
-const buildFields = (fields: [string]): string => {
+const buildFields = (fields: string[]): string => {
     return fields
         .map(
             f =>
@@ -64,7 +64,7 @@ const buildPageSize = (size: number): string => {
     return `pageSize=${size}`;
 };
 
-const buildSort = (sort: [airtableSort]): string => {
+const buildSort = (sort: airtableSort[]): string => {
     return sort
         .map((s, i) => `sort%5B${i}%5D%5Bfield%5D=${s.field}&sort%5B${i}%5D%5Bdirection%5D=${s.direction}`)
         .join('&');
@@ -93,8 +93,13 @@ const aggregateParamStrings = (acc: string, cur: string): string => {
 export const encodeGetUrl = (root: string) => (apiKey: string) => (base: string) => (table: string) => (
     params?: queryParams,
 ) => {
-    const encodedParams = Object.keys(params)
+    const encodedParams = params ? Object.keys(params)
         .map(buildParamString(params))
-        .reduce(aggregateParamStrings);
-    return encodedParams;
+        .reduce(aggregateParamStrings) : '';
+
+    let url = `${root}/${base}/${table}?${buildKey(apiKey)}`
+
+    url = params ? `${url}&${encodedParams}` : url
+
+    return url
 };
